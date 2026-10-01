@@ -1,0 +1,24 @@
+name: shop_stock
+description: Offline-first shop stock, sales and profit tracker.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ">=2.3.0 <4.0.0"
+  path: ">=1.8.3 <2.0.0"
+  uuid: ">=4.0.0 <6.0.0"
+  intl: ">=0.18.0 <0.22.0"
+  provider: ">=6.1.0 <8.0.0"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  sqflite_common_ffi: ">=2.3.0 <3.0.0"
+
+flutter:
+  uses-material-design: true

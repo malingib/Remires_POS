@@ -1,0 +1,36 @@
+name: Build APK
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Generate Android shell and assemble
+        run: |
+          flutter create .build_tmp --platforms=android --org com.example --project-name shop_stock
+          rm -rf .build_tmp/test
+          cp -r lib .build_tmp/ && cp -r test .build_tmp/ && cp pubspec.yaml .build_tmp/
+          cd .build_tmp
+          sed -i 's/minSdk ?= ?flutter\.minSdkVersion/minSdk = 21/' android/app/build.gradle || true
+          sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/' android/app/build.gradle || true
+          sed -i 's/android:label="shop_stock"/android:label="Shop Stock"/' android/app/src/main/AndroidManifest.xml
+      - name: Pub get, analyze, test
+        working-directory: .build_tmp
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+      - name: Build release APK
+        working-directory: .build_tmp
+        run: flutter build apk --release
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: shop_stock-release-apk
+          path: .build_tmp/build/app/outputs/flutter-apk/app-release.apk
